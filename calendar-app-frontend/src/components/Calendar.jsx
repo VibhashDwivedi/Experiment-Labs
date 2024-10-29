@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { auth } from '../../firebase';
+import { auth } from '../firebase';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -38,7 +38,7 @@ const CalendarComponent = () => {
   }, [currentEvent]);
 
   const handleSelectSlot = ({ start }) => {
-    setCurrentEvent({  title: '', date: start, description: '' });
+    setCurrentEvent({ title: '', date: start, description: '' });
     setShowModal(true);
   };
 
@@ -66,7 +66,7 @@ const CalendarComponent = () => {
       setEvents([...events, response.data]);
     }
     setShowModal(false);
-    setCurrentEvent({  title: '', date: '', description: '' });
+    setCurrentEvent({ title: '', date: '', description: '' });
   };
 
   const handleDeleteEvent = async () => {
@@ -76,7 +76,12 @@ const CalendarComponent = () => {
     });
     setEvents(events.filter(event => event.id !== currentEvent.id));
     setShowModal(false);
-    setCurrentEvent({  title: '', date: '', description: '' });
+    setCurrentEvent({ title: '', date: '', description: '' });
+  };
+
+  const handleLogout = async () => {
+    await auth.signOut();
+    window.location.reload(); // Reload the page to reflect the logout
   };
 
   if (loading) {
@@ -85,6 +90,9 @@ const CalendarComponent = () => {
 
   return (
     <div>
+      <Button variant="secondary" onClick={handleLogout} style={{ marginBottom: '10px' }}>
+        Logout
+      </Button>
       <Calendar
         localizer={localizer}
         events={events}
